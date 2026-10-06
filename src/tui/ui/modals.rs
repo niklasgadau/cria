@@ -122,7 +122,7 @@ pub fn draw_quick_add_modal(f: &mut Frame, app: &App) {
                 let (color, prefix) = match app.suggestion_mode {
                     Some(SuggestionMode::Label) => (get_label_color(s, app), "*"),
                     Some(SuggestionMode::Project) => (get_project_color(s, app), "+"),
-                    _ => (Color::Gray, "")
+                    _ => (Color::DarkGray, "")
                 };
                 let styled = Span::styled(format!("{}{}", prefix, s), Style::default().fg(color));
                 let absolute_index = start + i;
@@ -139,7 +139,7 @@ pub fn draw_quick_add_modal(f: &mut Frame, app: &App) {
         let suggestion_block = Block::default()
             .borders(Borders::ALL)
             .title("Suggestions")
-            .style(Style::default().fg(Color::Gray));
+            .style(Style::default().fg(Color::DarkGray));
         let suggestion_paragraph = Paragraph::new(suggestion_lines)
             .block(suggestion_block)
             .wrap(Wrap { trim: true });
@@ -149,7 +149,7 @@ pub fn draw_quick_add_modal(f: &mut Frame, app: &App) {
         let suggestion_block = Block::default()
             .borders(Borders::ALL)
             .title("Suggestions")
-            .style(Style::default().fg(Color::Gray));
+            .style(Style::default().fg(Color::DarkGray));
         let suggestion_paragraph = Paragraph::new("")
             .block(suggestion_block)
             .wrap(Wrap { trim: true });
@@ -161,17 +161,17 @@ pub fn draw_quick_add_modal(f: &mut Frame, app: &App) {
             Span::styled("Quick Add Magic Examples:", Style::default().fg(Color::Green).add_modifier(Modifier::BOLD))
         ]),
         Line::from(""),
-        Line::from(vec![Span::raw("• "), Span::styled("Buy groceries *shopping *urgent", Style::default().fg(Color::White)), Span::raw(" - adds labels")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Review PR @john", Style::default().fg(Color::White)), Span::raw(" - assigns to user")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Fix bug +work !3", Style::default().fg(Color::White)), Span::raw(" - sets project & priority")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Call mom tomorrow at 2pm", Style::default().fg(Color::White)), Span::raw(" - sets due date")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Submit report in 3 days", Style::default().fg(Color::White)), Span::raw(" - relative due date")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Start project next Monday", Style::default().fg(Color::White)), Span::raw(" - relative start date")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Pay bill due Aug 15th", Style::default().fg(Color::White)), Span::raw(" - explicit due date")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Begin training start tomorrow", Style::default().fg(Color::White)), Span::raw(" - explicit start date")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Team meeting every Monday", Style::default().fg(Color::White)), Span::raw(" - recurring task")]),
-        Line::from(vec![Span::raw("• "), Span::styled("new-label:urgent Buy groceries", Style::default().fg(Color::White)), Span::raw(" - creates & applies new label")]),
-        Line::from(vec![Span::raw("• "), Span::styled("new-project:[Work Stuff] Plan meeting", Style::default().fg(Color::White)), Span::raw(" - creates & assigns new project")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Buy groceries *shopping *urgent", Style::default().fg(Color::Reset)), Span::raw(" - adds labels")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Review PR @john", Style::default().fg(Color::Reset)), Span::raw(" - assigns to user")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Fix bug +work !3", Style::default().fg(Color::Reset)), Span::raw(" - sets project & priority")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Call mom tomorrow at 2pm", Style::default().fg(Color::Reset)), Span::raw(" - sets due date")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Submit report in 3 days", Style::default().fg(Color::Reset)), Span::raw(" - relative due date")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Start project next Monday", Style::default().fg(Color::Reset)), Span::raw(" - relative start date")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Pay bill due Aug 15th", Style::default().fg(Color::Reset)), Span::raw(" - explicit due date")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Begin training start tomorrow", Style::default().fg(Color::Reset)), Span::raw(" - explicit start date")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Team meeting every Monday", Style::default().fg(Color::Reset)), Span::raw(" - recurring task")]),
+        Line::from(vec![Span::raw("• "), Span::styled("new-label:urgent Buy groceries", Style::default().fg(Color::Reset)), Span::raw(" - creates & applies new label")]),
+        Line::from(vec![Span::raw("• "), Span::styled("new-project:[Work Stuff] Plan meeting", Style::default().fg(Color::Reset)), Span::raw(" - creates & assigns new project")]),
         Line::from("") ,
         Line::from(vec![
             Span::styled("Syntax: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
@@ -192,7 +192,7 @@ pub fn draw_quick_add_modal(f: &mut Frame, app: &App) {
     let help_block = Block::default()
         .borders(Borders::ALL)
         .title("Help")
-        .style(Style::default().fg(Color::Gray));
+        .style(Style::default().fg(Color::DarkGray));
     let help_paragraph = Paragraph::new(help_text)
         .block(help_block)
         .wrap(Wrap { trim: true });
@@ -248,7 +248,7 @@ pub fn draw_edit_modal(f: &mut Frame, app: &App) {
                 let (color, prefix) = match app.suggestion_mode {
                     Some(SuggestionMode::Label) => (get_label_color(s, app), "*"),
                     Some(SuggestionMode::Project) => (get_project_color(s, app), "+"),
-                    _ => (Color::Gray, "")
+                    _ => (Color::DarkGray, "")
                 };
                 let styled = Span::styled(format!("{}{}", prefix, s), Style::default().fg(color));
                 let absolute_index = start + i;
@@ -264,7 +264,7 @@ pub fn draw_edit_modal(f: &mut Frame, app: &App) {
         let suggestion_block = Block::default()
             .borders(Borders::ALL)
             .title("Suggestions")
-            .style(Style::default().fg(Color::Gray));
+            .style(Style::default().fg(Color::DarkGray));
         let suggestion_paragraph = Paragraph::new(suggestion_lines)
             .block(suggestion_block)
             .wrap(Wrap { trim: true });
@@ -273,7 +273,7 @@ pub fn draw_edit_modal(f: &mut Frame, app: &App) {
         let suggestion_block = Block::default()
             .borders(Borders::ALL)
             .title("Suggestions")
-            .style(Style::default().fg(Color::Gray));
+            .style(Style::default().fg(Color::DarkGray));
         let suggestion_paragraph = Paragraph::new("")
             .block(suggestion_block)
             .wrap(Wrap { trim: true });
@@ -285,13 +285,13 @@ pub fn draw_edit_modal(f: &mut Frame, app: &App) {
             Span::styled("Edit with Quick Add Magic:", Style::default().fg(Color::Blue).add_modifier(Modifier::BOLD))
         ]),
         Line::from(""),
-        Line::from(vec![Span::raw("• "), Span::styled("Buy groceries *shopping *urgent", Style::default().fg(Color::White)), Span::raw(" - adds labels")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Review PR @john", Style::default().fg(Color::White)), Span::raw(" - assigns to user")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Fix bug +work !3", Style::default().fg(Color::White)), Span::raw(" - sets project & priority")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Call mom tomorrow at 2pm", Style::default().fg(Color::White)), Span::raw(" - sets due date")]),
-        Line::from(vec![Span::raw("• "), Span::styled("Team meeting every Monday", Style::default().fg(Color::White)), Span::raw(" - recurring task")]),
-        Line::from(vec![Span::raw("• "), Span::styled("new-label:urgent Buy groceries", Style::default().fg(Color::White)), Span::raw(" - creates & applies new label")]),
-        Line::from(vec![Span::raw("• "), Span::styled("new-project:[Work Stuff] Plan meeting", Style::default().fg(Color::White)), Span::raw(" - creates & assigns new project")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Buy groceries *shopping *urgent", Style::default().fg(Color::Reset)), Span::raw(" - adds labels")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Review PR @john", Style::default().fg(Color::Reset)), Span::raw(" - assigns to user")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Fix bug +work !3", Style::default().fg(Color::Reset)), Span::raw(" - sets project & priority")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Call mom tomorrow at 2pm", Style::default().fg(Color::Reset)), Span::raw(" - sets due date")]),
+        Line::from(vec![Span::raw("• "), Span::styled("Team meeting every Monday", Style::default().fg(Color::Reset)), Span::raw(" - recurring task")]),
+        Line::from(vec![Span::raw("• "), Span::styled("new-label:urgent Buy groceries", Style::default().fg(Color::Reset)), Span::raw(" - creates & applies new label")]),
+        Line::from(vec![Span::raw("• "), Span::styled("new-project:[Work Stuff] Plan meeting", Style::default().fg(Color::Reset)), Span::raw(" - creates & assigns new project")]),
         Line::from(""),
         Line::from(vec![
             Span::styled("Syntax: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
@@ -312,7 +312,7 @@ pub fn draw_edit_modal(f: &mut Frame, app: &App) {
     let help_block = Block::default()
         .borders(Borders::ALL)
         .title("Help")
-        .style(Style::default().fg(Color::Gray));
+        .style(Style::default().fg(Color::DarkGray));
     let help_paragraph = Paragraph::new(help_text)
         .block(help_block)
         .wrap(Wrap { trim: true });
@@ -330,7 +330,7 @@ pub fn draw_confirmation_dialog(f: &mut Frame, _app: &App) {
     let block = Block::default()
         .title(" Confirm Action ")
         .borders(Borders::ALL)
-        .border_style(Style::default().fg(Color::White));
+        .border_style(Style::default().fg(Color::Reset));
     f.render_widget(block, modal_area);
 
     let buttons_text: Vec<Line> = vec![
@@ -458,7 +458,7 @@ pub fn draw_advanced_help_modal(f: &mut Frame, _app: &App) {
         Line::raw(""),
         Line::from(vec![Span::styled("Note:", Style::default().fg(Color::Yellow)), Span::raw(" These features are planned for future releases.")]),
         Line::raw(""),
-        Line::from(vec![Span::styled("Press q or ESC to close", Style::default().fg(Color::Gray))]),
+        Line::from(vec![Span::styled("Press q or ESC to close", Style::default().fg(Color::DarkGray))]),
     ];
     let help_paragraph = Paragraph::new(help_lines)
         .block(block)
@@ -514,9 +514,9 @@ pub fn draw_advanced_features_modal(f: &mut Frame, app: &App) {
         };
         
         let desc_style = if is_selected {
-            Style::default().fg(Color::Gray).add_modifier(Modifier::BOLD)
+            Style::default().fg(Color::DarkGray).add_modifier(Modifier::BOLD)
         } else {
-            Style::default().fg(Color::Gray)
+            Style::default().fg(Color::DarkGray)
         };
         
         let status_style = if *available {
@@ -623,7 +623,7 @@ pub fn draw_quick_actions_modal(f: &mut Frame, app: &App) {
     if let Some(ref quick_actions) = quick_actions {
         if quick_actions.is_empty() {
             lines.push(Line::from(vec![
-                Span::styled("No quick actions configured.", Style::default().fg(Color::Gray))
+                Span::styled("No quick actions configured.", Style::default().fg(Color::DarkGray))
             ]));
             lines.push(Line::raw(""));
             lines.push(Line::from(vec![
@@ -661,7 +661,7 @@ pub fn draw_quick_actions_modal(f: &mut Frame, app: &App) {
                             Style::default()
                         };
                         
-                        description_spans.push(Span::styled("Move to project: ", base_style.fg(Color::White)));
+                        description_spans.push(Span::styled("Move to project: ", base_style.fg(Color::Reset)));
                         
                         let project_color = get_project_color(&action.target, app);
                         let project_style = if is_selected {
@@ -678,7 +678,7 @@ pub fn draw_quick_actions_modal(f: &mut Frame, app: &App) {
                             Style::default()
                         };
                         
-                        description_spans.push(Span::styled("Add label: ", base_style.fg(Color::White)));
+                        description_spans.push(Span::styled("Add label: ", base_style.fg(Color::Reset)));
                         
                         let label_color = get_label_color(&action.target, app);
                         let label_style = if is_selected {
@@ -695,7 +695,7 @@ pub fn draw_quick_actions_modal(f: &mut Frame, app: &App) {
                             Style::default()
                         };
                         
-                        description_spans.push(Span::styled("Set priority to: ", base_style.fg(Color::White)));
+                        description_spans.push(Span::styled("Set priority to: ", base_style.fg(Color::Reset)));
                         
                         // Color priority based on level (1=low, 5=high)
                         let priority_color = match action.target.as_str() {
@@ -704,7 +704,7 @@ pub fn draw_quick_actions_modal(f: &mut Frame, app: &App) {
                             "3" => Color::LightBlue, // Medium priority
                             "4" => Color::Magenta, // High priority
                             "5" => Color::Red,     // Very high priority
-                            _ => Color::White,     // Unknown priority
+                            _ => Color::Reset,     // Unknown priority
                         };
                         
                         let priority_style = if is_selected {
@@ -719,7 +719,7 @@ pub fn draw_quick_actions_modal(f: &mut Frame, app: &App) {
                         let desc_style = if is_selected {
                             Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)
                         } else {
-                            Style::default().fg(Color::White)
+                            Style::default().fg(Color::Reset)
                         };
                         description_spans.push(Span::styled(action.get_description(), desc_style));
                     }
@@ -730,7 +730,7 @@ pub fn draw_quick_actions_modal(f: &mut Frame, app: &App) {
         }
     } else {
         lines.push(Line::from(vec![
-            Span::styled("No quick actions configured.", Style::default().fg(Color::Gray))
+            Span::styled("No quick actions configured.", Style::default().fg(Color::DarkGray))
         ]));
         lines.push(Line::raw(""));
         lines.push(Line::from(vec![
@@ -785,14 +785,14 @@ pub fn draw_relations_modal(f: &mut Frame, app: &App) {
         if let Some(task) = app.all_tasks.iter().find(|t| t.id == task_id) {
             lines.push(Line::from(vec![
                 Span::styled("Task: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
-                Span::styled(&task.title, Style::default().fg(Color::White))
+                Span::styled(&task.title, Style::default().fg(Color::Reset))
             ]));
             lines.push(Line::raw(""));
             
             if let Some(related_tasks) = &task.related_tasks {
                 if related_tasks.is_empty() {
                     lines.push(Line::from(vec![
-                        Span::styled("No relations found.", Style::default().fg(Color::Gray))
+                        Span::styled("No relations found.", Style::default().fg(Color::DarkGray))
                     ]));
                 } else {
                     for (relation_type, tasks) in related_tasks {
@@ -821,14 +821,14 @@ pub fn draw_relations_modal(f: &mut Frame, app: &App) {
                                 } else if relation_type == "blocked" && !related_task.done {
                                     Style::default().fg(Color::Red) // Highlight blocking tasks
                                 } else {
-                                    Style::default().fg(Color::White)
+                                    Style::default().fg(Color::Reset)
                                 };
                                 
                                 lines.push(Line::from(vec![
                                     Span::raw("  "),
                                     Span::styled(status_indicator, task_style),
                                     Span::raw(" "),
-                                    Span::styled(format!("#{} ", related_task.id), Style::default().fg(Color::Gray)),
+                                    Span::styled(format!("#{} ", related_task.id), Style::default().fg(Color::DarkGray)),
                                     Span::styled(&related_task.title, task_style)
                                 ]));
                             }
@@ -838,7 +838,7 @@ pub fn draw_relations_modal(f: &mut Frame, app: &App) {
                 }
             } else {
                 lines.push(Line::from(vec![
-                    Span::styled("No relations found.", Style::default().fg(Color::Gray))
+                    Span::styled("No relations found.", Style::default().fg(Color::DarkGray))
                 ]));
             }
         }
@@ -950,7 +950,7 @@ pub fn draw_add_relation_modal(f: &mut Frame, app: &App) {
     let help_block = Block::default()
         .borders(Borders::ALL)
         .title("Help")
-        .style(Style::default().fg(Color::Gray));
+        .style(Style::default().fg(Color::DarkGray));
     
     let help_paragraph = Paragraph::new(help_text)
         .block(help_block)
@@ -1013,7 +1013,7 @@ pub fn draw_subtask_modal(f: &mut Frame, app: &App) {
     if app.filtered_subtask_tasks.is_empty() {
         list_lines.push(Line::from(Span::styled(
             "No tasks found", 
-            Style::default().fg(Color::Gray)
+            Style::default().fg(Color::DarkGray)
         )));
     } else {
         for (i, (task_id, task_title)) in app.filtered_subtask_tasks.iter().enumerate() {
@@ -1021,11 +1021,11 @@ pub fn draw_subtask_modal(f: &mut Frame, app: &App) {
             let style = if is_selected {
                 Style::default().fg(Color::Black).bg(Color::Yellow).add_modifier(Modifier::BOLD)
             } else {
-                Style::default().fg(Color::White)
+                Style::default().fg(Color::Reset)
             };
             
             list_lines.push(Line::from(vec![
-                Span::styled(format!("#{} ", task_id), Style::default().fg(Color::Gray)),
+                Span::styled(format!("#{} ", task_id), Style::default().fg(Color::DarkGray)),
                 Span::styled(task_title, style)
             ]));
         }
@@ -1052,7 +1052,7 @@ pub fn draw_subtask_modal(f: &mut Frame, app: &App) {
     let help_block = Block::default()
         .borders(Borders::ALL)
         .title("Help")
-        .style(Style::default().fg(Color::Gray));
+        .style(Style::default().fg(Color::DarkGray));
     
     let help_paragraph = Paragraph::new(help_text)
         .block(help_block)
@@ -1088,7 +1088,7 @@ pub fn draw_add_subtask_modal(f: &mut Frame, app: &App) {
     // Show parent task info
     if let Some(parent_task) = app.get_selected_task() {
         let parent_info = Line::from(vec![
-            Span::styled("Adding subtask to: ", Style::default().fg(Color::Gray)),
+            Span::styled("Adding subtask to: ", Style::default().fg(Color::DarkGray)),
             Span::styled(&parent_task.title, Style::default().fg(Color::Green).add_modifier(Modifier::BOLD))
         ]);
         

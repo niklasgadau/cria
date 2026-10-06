@@ -74,7 +74,7 @@ impl AttachmentModal {
 
         let text = Paragraph::new(info_text)
             .block(block)
-            .style(Style::default().fg(Color::Gray));
+            .style(Style::default().fg(Color::DarkGray));
         f.render_widget(text, area);
     }
 
@@ -85,7 +85,7 @@ impl AttachmentModal {
     fn draw_footer(&self, f: &mut Frame, area: Rect) {
         let block = Block::default()
             .borders(Borders::ALL)
-            .style(Style::default().fg(Color::Gray));
+            .style(Style::default().fg(Color::DarkGray));
 
         let mut help_lines = Vec::new();
         
@@ -101,22 +101,22 @@ impl AttachmentModal {
         if !self.viewer.attachments.is_empty() {
             help_lines.push(Line::from(vec![
                 Span::styled("↑/↓ ", Style::default().fg(Color::Yellow)),
-                Span::styled("Navigate", Style::default().fg(Color::Gray)),
+                Span::styled("Navigate", Style::default().fg(Color::DarkGray)),
                 Span::styled(" | ", Style::default().fg(Color::DarkGray)),
                 Span::styled("d ", Style::default().fg(Color::Yellow)),
-                Span::styled("Download", Style::default().fg(Color::Gray)),
+                Span::styled("Download", Style::default().fg(Color::DarkGray)),
                 Span::styled(" | ", Style::default().fg(Color::DarkGray)),
                 Span::styled("r ", Style::default().fg(Color::Yellow)),
-                Span::styled("Remove", Style::default().fg(Color::Gray)),
+                Span::styled("Remove", Style::default().fg(Color::DarkGray)),
             ]));
         }
         
         help_lines.push(Line::from(vec![
             Span::styled("u ", Style::default().fg(Color::Yellow)),
-            Span::styled("Upload new file", Style::default().fg(Color::Gray)),
+            Span::styled("Upload new file", Style::default().fg(Color::DarkGray)),
             Span::styled(" | ", Style::default().fg(Color::DarkGray)),
             Span::styled("q/ESC ", Style::default().fg(Color::Yellow)),
-            Span::styled("Close", Style::default().fg(Color::Gray)),
+            Span::styled("Close", Style::default().fg(Color::DarkGray)),
         ]));
 
         let text = Paragraph::new(help_lines)

@@ -39,7 +39,7 @@ pub fn draw_project_picker_modal(f: &mut Frame, app: &App) {
         let color = if *pid == -1 {
             Color::Cyan
         } else {
-            app.project_colors.get(pid).map(|hex| hex_to_color(hex)).unwrap_or(Color::White)
+            app.project_colors.get(pid).map(|hex| hex_to_color(hex)).unwrap_or(Color::Reset)
         };
         let mut style = Style::default().fg(color);
         if is_selected {
@@ -99,7 +99,7 @@ pub fn draw_label_picker_modal(f: &mut Frame, app: &App) {
         let is_selected = i == app.selected_label_picker_index;
         let is_checked = app.selected_label_ids.contains(lid);
         
-        let color = app.label_colors.get(lid).map(|hex| hex_to_color(hex)).unwrap_or(Color::White);
+        let color = app.label_colors.get(lid).map(|hex| hex_to_color(hex)).unwrap_or(Color::Reset);
         let mut style = Style::default().fg(color);
         if is_selected {
             style = style.add_modifier(Modifier::REVERSED | Modifier::BOLD);

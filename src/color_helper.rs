@@ -86,7 +86,7 @@ impl ColorHelper {
     
     pub fn get_contrasting_style(&self, hex_color: &str) -> Style {
         // Parse the color
-        let color = self.parse_hex_color(hex_color).unwrap_or(Color::White);
+        let color = self.parse_hex_color(hex_color).unwrap_or(Color::Reset);
         
         if self.is_color_problematic(hex_color) {
             // Problematic color - use neutral background with color as foreground
@@ -103,7 +103,7 @@ impl ColorHelper {
             let text_color = if self.calculate_brightness(hex_color) > 0.5 {
                 Color::Black // Dark text on light background
             } else {
-                Color::White // Light text on dark background
+                Color::Reset // Light text on dark background
             };
             
             Style::default()

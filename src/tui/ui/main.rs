@@ -24,7 +24,7 @@ pub fn hex_to_color(hex: &str) -> Color {
             return Color::Rgb(r, g, b);
         }
     }
-    Color::White
+    Color::Reset
 }
 
 pub fn draw(f: &mut Frame, app: &App) {
@@ -194,7 +194,7 @@ fn draw_debug_pane(f: &mut Frame, app: &App, area: Rect) {
     
     let debug_widget = Paragraph::new(debug_content)
         .block(debug_block)
-        .style(Style::default().fg(Color::White))
+        .style(Style::default().fg(Color::Reset))
         .scroll((0, 0));
     
     f.render_widget(debug_widget, area);

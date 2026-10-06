@@ -195,19 +195,19 @@ impl FilePickerModal {
         let path_text = self.current_path.to_string_lossy();
         let text = Paragraph::new(format!("Current: {}", path_text))
             .block(block)
-            .style(Style::default().fg(Color::Gray));
+            .style(Style::default().fg(Color::DarkGray));
         f.render_widget(text, area);
     }
 
     fn draw_content(&self, f: &mut Frame, area: Rect) {
         let block = Block::default()
             .borders(Borders::ALL)
-            .style(Style::default().fg(Color::Gray));
+            .style(Style::default().fg(Color::DarkGray));
 
         if self.entries.is_empty() {
             let text = Paragraph::new("No files found")
                 .block(block)
-                .style(Style::default().fg(Color::Gray));
+                .style(Style::default().fg(Color::DarkGray));
             f.render_widget(text, area);
             return;
         }
@@ -247,22 +247,22 @@ impl FilePickerModal {
     fn draw_footer(&self, f: &mut Frame, area: Rect) {
         let block = Block::default()
             .borders(Borders::ALL)
-            .style(Style::default().fg(Color::Gray));
+            .style(Style::default().fg(Color::DarkGray));
 
         let help_lines = vec![
             Line::from(vec![
                 Span::styled("↑/↓ ", Style::default().fg(Color::Yellow)),
-                Span::styled("Navigate", Style::default().fg(Color::Gray)),
+                Span::styled("Navigate", Style::default().fg(Color::DarkGray)),
                 Span::styled(" | ", Style::default().fg(Color::DarkGray)),
                 Span::styled("Enter ", Style::default().fg(Color::Yellow)),
-                Span::styled("Select file/Open dir", Style::default().fg(Color::Gray)),
+                Span::styled("Select file/Open dir", Style::default().fg(Color::DarkGray)),
             ]),
             Line::from(vec![
                 Span::styled("h ", Style::default().fg(Color::Yellow)),
-                Span::styled("Toggle hidden files", Style::default().fg(Color::Gray)),
+                Span::styled("Toggle hidden files", Style::default().fg(Color::DarkGray)),
                 Span::styled(" | ", Style::default().fg(Color::DarkGray)),
                 Span::styled("q/ESC ", Style::default().fg(Color::Yellow)),
-                Span::styled("Cancel", Style::default().fg(Color::Gray)),
+                Span::styled("Cancel", Style::default().fg(Color::DarkGray)),
             ]),
         ];
 

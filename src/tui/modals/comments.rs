@@ -191,7 +191,7 @@ impl CommentsModal {
         } else {
             let no_attachments = Paragraph::new("No attachments available for this task")
                 .block(Block::default().borders(Borders::ALL))
-                .style(Style::default().fg(Color::Gray))
+                .style(Style::default().fg(Color::DarkGray))
                 .alignment(Alignment::Center);
             f.render_widget(no_attachments, chunks[1]);
         }
@@ -207,7 +207,7 @@ impl CommentsModal {
         if self.comments.is_empty() {
             let no_comments = Paragraph::new("No comments yet. Add the first comment below!")
                 .block(Block::default().borders(Borders::ALL))
-                .style(Style::default().fg(Color::Gray))
+                .style(Style::default().fg(Color::DarkGray))
                 .alignment(Alignment::Center);
             f.render_widget(no_comments, area);
             return;
@@ -234,9 +234,9 @@ impl CommentsModal {
             };
 
             let timestamp_style = if is_selected {
-                Style::default().fg(Color::Gray).bg(Color::DarkGray)
+                Style::default().fg(Color::DarkGray).bg(Color::DarkGray)
             } else {
-                Style::default().fg(Color::Gray)
+                Style::default().fg(Color::DarkGray)
             };
 
             lines.push(Line::from(vec![
@@ -250,9 +250,9 @@ impl CommentsModal {
             
             for (line_idx, line) in content_lines.iter().enumerate() {
                 let content_style = if is_selected {
-                    Style::default().fg(Color::White).bg(Color::DarkGray)
+                    Style::default().fg(Color::Reset).bg(Color::DarkGray)
                 } else {
-                    Style::default().fg(Color::White)
+                    Style::default().fg(Color::Reset)
                 };
 
                 let prefix = if line_idx == 0 { "💬 " } else { "   " };
@@ -268,7 +268,7 @@ impl CommentsModal {
         let comments_block = Block::default()
             .borders(Borders::ALL)
             .title("Comments")
-            .style(Style::default().fg(Color::White));
+            .style(Style::default().fg(Color::Reset));
         
         let comments_para = Paragraph::new(lines)
             .block(comments_block)
@@ -282,7 +282,7 @@ impl CommentsModal {
         if self.comments.is_empty() {
             let no_comments = Paragraph::new("No comments to show")
                 .block(Block::default().borders(Borders::ALL))
-                .style(Style::default().fg(Color::Gray));
+                .style(Style::default().fg(Color::DarkGray));
             f.render_widget(no_comments, area);
             return;
         }
@@ -331,7 +331,7 @@ impl CommentsModal {
         let detail_block = Block::default()
             .borders(Borders::ALL)
             .title("Comment Detail")
-            .style(Style::default().fg(Color::White));
+            .style(Style::default().fg(Color::Reset));
         
         let detail_para = Paragraph::new(lines)
             .block(detail_block)
@@ -378,7 +378,7 @@ impl CommentsModal {
         let metadata_block = Block::default()
             .borders(Borders::ALL)
             .title("Metadata")
-            .style(Style::default().fg(Color::White));
+            .style(Style::default().fg(Color::Reset));
         
         let metadata_para = Paragraph::new(lines)
             .block(metadata_block)
@@ -395,7 +395,7 @@ impl CommentsModal {
         
         let input_para = Paragraph::new(self.input.as_str())
             .block(input_block)
-            .style(Style::default().fg(Color::White));
+            .style(Style::default().fg(Color::Reset));
         
         f.render_widget(input_para, area);
         
@@ -413,7 +413,7 @@ impl CommentsModal {
         };
 
         let help = Paragraph::new(help_text)
-            .style(Style::default().fg(Color::Gray))
+            .style(Style::default().fg(Color::DarkGray))
             .alignment(Alignment::Center);
         
         f.render_widget(help, area);

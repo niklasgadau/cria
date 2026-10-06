@@ -81,7 +81,7 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
                     // Show up to 5 subtasks by name
                     for (_i, subtask) in subtasks.iter().take(5).enumerate() {
                         let status_icon = if subtask.done { "✓" } else { "○" };
-                        let status_color = if subtask.done { Color::Green } else { Color::Gray };
+                        let status_color = if subtask.done { Color::Green } else { Color::DarkGray };
                         
                         details_lines.push(Line::from(vec![
                             Span::raw("  • "),
@@ -156,7 +156,7 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
                     3 => Color::Yellow,
                     2 => Color::Blue,
                     1 => Color::Magenta,
-                    _ => Color::White,
+                    _ => Color::Reset,
                 };
                 details_lines.push(Line::from(vec![
                     Span::styled("Priority: ", Style::default().add_modifier(Modifier::BOLD)),
@@ -412,14 +412,14 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
                 if attachments.len() > max_show {
                     details_lines.push(Line::from(vec![
                         Span::raw("  "),
-                        Span::styled("...", Style::default().fg(Color::Gray)),
+                        Span::styled("...", Style::default().fg(Color::DarkGray)),
                         Span::raw(format!(" and {} more", attachments.len() - max_show))
                     ]));
                 }
                 
                 details_lines.push(Line::from(vec![
                     Span::raw("  "),
-                    Span::styled("Press '.a' to view all attachments", Style::default().fg(Color::Gray).add_modifier(Modifier::ITALIC))
+                    Span::styled("Press '.a' to view all attachments", Style::default().fg(Color::DarkGray).add_modifier(Modifier::ITALIC))
                 ]));
                 details_lines.push(Line::from(""));
             }

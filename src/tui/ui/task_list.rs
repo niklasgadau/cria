@@ -47,7 +47,7 @@ fn format_date_relative(date: &Option<DateTime<Utc>>) -> (String, Color) {
             } else if diff <= 3 {
                 Color::Cyan // Due soon
             } else {
-                Color::White // Normal
+                Color::Reset // Normal
             };
             
             (formatted, color)
@@ -181,7 +181,7 @@ fn create_wrapped_cell_for_column<'a>(
                         3 => Color::Yellow,
                         2 => Color::Blue,
                         1 => Color::Magenta,
-                        _ => Color::White,
+                        _ => Color::Reset,
                     };
                     spans.push(Span::styled("\u{f024} ", Style::default().fg(color)));
                 }
@@ -196,7 +196,7 @@ fn create_wrapped_cell_for_column<'a>(
             
             // Add hierarchy prefix if present
             if !hierarchy_prefix.is_empty() {
-                spans.push(Span::styled(hierarchy_prefix, Style::default().fg(Color::Gray)));
+                spans.push(Span::styled(hierarchy_prefix, Style::default().fg(Color::DarkGray)));
             }
             
             spans.push(Span::raw(&task.title));
@@ -213,7 +213,7 @@ fn create_wrapped_cell_for_column<'a>(
                 .unwrap_or_else(|| "Unknown".to_string());
             let project_color = app.project_colors.get(&task.project_id)
                 .and_then(|hex| Some(hex_to_color(hex.as_str())))
-                .unwrap_or(Color::White);
+                .unwrap_or(Color::Reset);
             
             let truncated = if project_name.len() > width as usize {
                 format!("{}…", &project_name[..width.saturating_sub(1) as usize])
@@ -229,7 +229,7 @@ fn create_wrapped_cell_for_column<'a>(
                 for (i, label) in labels.iter().enumerate() {
                     let color = app.label_colors.get(&label.id)
                         .and_then(|hex| Some(hex_to_color(hex.as_str())))
-                        .unwrap_or(ratatui::style::Color::Gray);
+                        .unwrap_or(ratatui::style::Color::DarkGray);
                     spans.push(Span::styled(
                         label.title.clone(),
                         Style::default().fg(color),
@@ -268,7 +268,7 @@ fn create_wrapped_cell_for_column<'a>(
                         3 => Color::Yellow,             // Medium priority
                         2 => Color::Blue,               // Low priority
                         1 => Color::Magenta,            // Lowest priority
-                        _ => Color::White,              // Should never happen
+                        _ => Color::Reset,              // Should never happen
                     };
                     Cell::from(format!("{}{}", flag_icon, p)).style(Style::default().fg(color))
                 }
@@ -281,7 +281,7 @@ fn create_wrapped_cell_for_column<'a>(
             if task.done {
                 Cell::from("Done").style(Style::default().fg(Color::Green))
             } else {
-                Cell::from("Open").style(Style::default().fg(Color::White))
+                Cell::from("Open").style(Style::default().fg(Color::Reset))
             }
         }
         TaskColumn::Assignees => {
@@ -420,7 +420,7 @@ pub fn draw_tasks_table(f: &mut Frame, app: &App, area: Rect) {
                     if usize::from(cycle) < app.flash_cycle_max {
                         let project_color = app.project_colors.get(&task.project_id)
                             .map(|hex| hex_to_color(hex))
-                            .unwrap_or(Color::White);
+                            .unwrap_or(Color::Reset);
                         let base = match project_color {
                             Color::Rgb(r, g, b) => (r, g, b),
                             _ => (255, 255, 0),
@@ -445,18 +445,13 @@ pub fn draw_tasks_table(f: &mut Frame, app: &App, area: Rect) {
                 if let Some(bg) = flash_bg {
                     row = row.style(Style::default().bg(bg).add_modifier(Modifier::BOLD));
                 } else {
-                    row = row.style(Style::default().bg(Color::DarkGray));
+                    row = row.style(Style::default().add_modifier(Modifier::REVERSED));
                 }
             } else if let Some(bg) = flash_bg {
                 // Flash effect takes priority over alternating colors
                 row = row.style(Style::default().bg(bg).add_modifier(Modifier::BOLD));
-            } else {
-                // Apply alternating row highlighting for easier scanning
-                if i % 2 == 1 {
-                    // Every other row gets a subtle background
-                    row = row.style(Style::default().bg(Color::Rgb(40, 40, 50)));
-                }
             }
+            // No alternating row background: a fixed dark bg is unreadable on light terminals
             row
         });
     

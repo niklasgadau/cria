@@ -28,7 +28,7 @@ impl AttachmentViewer {
                 .borders(Borders::ALL);
             let text = Paragraph::new("No attachments")
                 .block(block)
-                .style(Style::default().fg(Color::Gray));
+                .style(Style::default().fg(Color::DarkGray));
             f.render_widget(text, area);
             return;
         }
@@ -58,7 +58,7 @@ impl AttachmentViewer {
                 let is_selected = i == self.selected_index;
                 let style = if is_selected {
                     Style::default()
-                        .fg(Color::White)
+                        .fg(Color::Reset)
                         .bg(Color::Blue)
                         .add_modifier(Modifier::BOLD)
                 } else {
@@ -74,7 +74,7 @@ impl AttachmentViewer {
                     Span::styled(icon, style.clone()),
                     Span::styled(" ", style.clone()),
                     Span::styled(file_name, style.clone()),
-                    Span::styled(format!(" ({})", size_text), style.fg(Color::Gray)),
+                    Span::styled(format!(" ({})", size_text), style.fg(Color::DarkGray)),
                 ]));
             }
         }
@@ -93,7 +93,7 @@ impl AttachmentViewer {
         if self.attachments.is_empty() {
             let text = Paragraph::new("No attachment selected")
                 .block(block)
-                .style(Style::default().fg(Color::Gray));
+                .style(Style::default().fg(Color::DarkGray));
             f.render_widget(text, area);
             return;
         }
