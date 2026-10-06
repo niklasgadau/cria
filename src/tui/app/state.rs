@@ -31,6 +31,12 @@ pub struct App {
     pub label_colors: HashMap<i64, String>,
     pub selected_task_index: usize,
     pub show_info_pane: bool,
+    // Task details: fullscreen toggle and scroll state (Cells: updated while rendering)
+    pub details_fullscreen: bool,
+    pub details_scroll: std::cell::Cell<u16>,
+    pub details_max_scroll: std::cell::Cell<u16>,
+    pub details_page: std::cell::Cell<u16>,
+    pub details_scroll_task: std::cell::Cell<Option<i64>>,
     // Quick Add Modal state
     pub show_quick_add_modal: bool,
     pub quick_add_input: String,
@@ -197,6 +203,11 @@ impl App {
             label_colors: HashMap::new(),
             selected_task_index: 0,
             show_info_pane: true,
+            details_fullscreen: false,
+            details_scroll: std::cell::Cell::new(0),
+            details_max_scroll: std::cell::Cell::new(0),
+            details_page: std::cell::Cell::new(10),
+            details_scroll_task: std::cell::Cell::new(None),
             show_quick_add_modal: false,
             quick_add_input: String::new(),
             quick_add_cursor_position: 0,
@@ -347,6 +358,11 @@ impl App {
 
     pub fn cache_detailed_task(&mut self, task: Task) {
         self.detailed_task_cache.insert(task.id, task);
+    }
+    pub fn scroll_details(&self, delta: i32) {
+        let max = self.details_max_scroll.get() as i32;
+        let next = (self.details_scroll.get() as i32 + delta).clamp(0, max);
+        self.details_scroll.set(next as u16);
     }
     pub fn toggle_info_pane(&mut self) { self.show_info_pane = !self.show_info_pane; }
     pub fn show_quick_add_modal(&mut self) { 

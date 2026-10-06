@@ -31,7 +31,9 @@ pub fn draw(f: &mut Frame, app: &App) {
     // Use full screen area (no header)
     let body_area = f.size();
 
-    let _main_layout = if app.show_debug_pane {
+    let _main_layout = if app.details_fullscreen {
+        draw_task_details(f, app, body_area);
+    } else if app.show_debug_pane {
         let vertical_chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints([

@@ -9,7 +9,19 @@ use chrono::{Datelike, Local};
 use super::hex_to_color;
 
 
+/// Vikunja stores descriptions and comments as HTML; render them as plain text.
+fn html_to_lines(html: &str, width: usize) -> Vec<String> {
+    if !html.contains('<') {
+        return html.lines().map(String::from).collect();
+    }
+    match html2text::from_read(html.as_bytes(), width.max(20)) {
+        Ok(text) => text.lines().map(String::from).collect(),
+        Err(_) => vec![html.to_string()],
+    }
+}
+
 pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
+    let text_width = area.width.saturating_sub(2) as usize;
     let selected_task = app.get_selected_task();
     
     let details = if let Some(basic_task) = selected_task {
@@ -32,9 +44,11 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
         if let Some(description) = &task.description {
             if !description.is_empty() {
                 details_lines.push(Line::from(vec![
-                    Span::styled("Description: ", Style::default().add_modifier(Modifier::BOLD)),
-                    Span::raw(description)
+                    Span::styled("Description:", Style::default().add_modifier(Modifier::BOLD)),
                 ]));
+                for line in html_to_lines(description, text_width) {
+                    details_lines.push(Line::from(line));
+                }
                 details_lines.push(Line::from(""));
             }
         }
@@ -477,10 +491,12 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
                         Span::raw("  "),
                         Span::styled(date_str.clone(), Style::default().fg(Color::DarkGray)),
                     ]));
-                    details_lines.push(Line::from(vec![
-                        Span::raw("     "),
-                        Span::raw(text),
-                    ]));
+                    for line in html_to_lines(text, text_width.saturating_sub(5)) {
+                        details_lines.push(Line::from(vec![
+                            Span::raw("     "),
+                            Span::raw(line),
+                        ]));
+                    }
                     details_lines.push(Line::from(""));
                 }
             }
@@ -705,9 +721,36 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
     } else {
         vec![Line::from("No task selected")]
     };
+    // Reset scroll when the selected task changes
+    let task_id = selected_task.map(|t| t.id);
+    if app.details_scroll_task.get() != task_id {
+        app.details_scroll_task.set(task_id);
+        app.details_scroll.set(0);
+    }
+    // Estimate wrapped height to clamp scrolling
+    let inner_width = area.width.saturating_sub(2).max(1) as usize;
+    let inner_height = area.height.saturating_sub(2);
+    let total_rows: usize = details.iter()
+        .map(|l| l.width().max(1).div_ceil(inner_width))
+        .sum();
+    let max_scroll = (total_rows as u16).saturating_sub(inner_height);
+    app.details_max_scroll.set(max_scroll);
+    app.details_page.set(inner_height.max(1));
+    if app.details_scroll.get() > max_scroll {
+        app.details_scroll.set(max_scroll);
+    }
+    let scroll = app.details_scroll.get();
+    let title = if app.details_fullscreen {
+        format!("Task Details [{}/{}]  j/k scroll · PgUp/PgDn · g/G · v/Esc close", scroll, max_scroll)
+    } else if max_scroll > 0 {
+        format!("Task Details [{}/{}]  J/K scroll · v fullscreen", scroll, max_scroll)
+    } else {
+        "Task Details".to_string()
+    };
     let paragraph = Paragraph::new(details)
-        .block(Block::default().borders(Borders::ALL).title("Task Details"))
-        .wrap(Wrap { trim: true });
+        .block(Block::default().borders(Borders::ALL).title(title))
+        .wrap(Wrap { trim: true })
+        .scroll((scroll, 0));
     f.render_widget(paragraph, area);
 }
 

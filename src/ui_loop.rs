@@ -495,6 +495,41 @@ pub async fn run_ui(
                     continue;
                 }
 
+                // Task details: fullscreen view and scrolling (only without an open overlay)
+                if !(app_guard.show_help_modal || app_guard.show_confirmation_dialog
+                    || app_guard.show_advanced_features_modal || app_guard.show_file_picker_modal
+                    || app_guard.show_attachment_modal || app_guard.show_url_modal) {
+                    let ctrl = key.modifiers.contains(crossterm::event::KeyModifiers::CONTROL);
+                    let page = app_guard.details_page.get() as i32;
+                    if app_guard.details_fullscreen {
+                        let handled = match key.code {
+                            KeyCode::Char('j') | KeyCode::Down => { app_guard.scroll_details(1); true }
+                            KeyCode::Char('k') | KeyCode::Up => { app_guard.scroll_details(-1); true }
+                            KeyCode::Char('d') if ctrl => { app_guard.scroll_details(page / 2); true }
+                            KeyCode::Char('u') if ctrl => { app_guard.scroll_details(-page / 2); true }
+                            KeyCode::PageDown => { app_guard.scroll_details(page); true }
+                            KeyCode::PageUp => { app_guard.scroll_details(-page); true }
+                            KeyCode::Char('g') => { app_guard.details_scroll.set(0); true }
+                            KeyCode::Char('G') => { app_guard.scroll_details(i32::from(u16::MAX)); true }
+                            KeyCode::Char('v') | KeyCode::Char('q') | KeyCode::Esc => { app_guard.details_fullscreen = false; true }
+                            _ => false,
+                        };
+                        if handled {
+                            continue;
+                        }
+                    } else if !ctrl {
+                        let handled = match key.code {
+                            KeyCode::Char('v') => { app_guard.details_fullscreen = true; true }
+                            KeyCode::Char('J') => { app_guard.scroll_details(1); true }
+                            KeyCode::Char('K') => { app_guard.scroll_details(-1); true }
+                            _ => false,
+                        };
+                        if handled {
+                            continue;
+                        }
+                    }
+                }
+
                 // Handle Ctrl key combinations first
                 if key.modifiers.contains(crossterm::event::KeyModifiers::CONTROL) {
                     match key.code {
