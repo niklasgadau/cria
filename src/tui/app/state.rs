@@ -359,6 +359,25 @@ impl App {
     pub fn cache_detailed_task(&mut self, task: Task) {
         self.detailed_task_cache.insert(task.id, task);
     }
+    /// Web UI URL of a task, derived from the configured API URL
+    pub fn task_web_url(&self, task_id: i64) -> String {
+        let base = self.config.api_url.trim_end_matches('/').trim_end_matches("/api/v1");
+        format!("{}/tasks/{}", base, task_id)
+    }
+
+    /// Copy the selected task's web URL to the system clipboard
+    pub fn copy_selected_task_url(&mut self) {
+        let Some(id) = self.get_selected_task().map(|t| t.id) else {
+            self.show_toast("No task selected".to_string());
+            return;
+        };
+        let url = self.task_web_url(id);
+        match copy_to_clipboard(&url) {
+            Ok(()) => self.show_toast(format!("Copied {}", url)),
+            Err(e) => self.show_toast(format!("Copy failed: {}", e)),
+        }
+    }
+
     pub fn scroll_details(&self, delta: i32) {
         let max = self.details_max_scroll.get() as i32;
         let next = (self.details_scroll.get() as i32 + delta).clamp(0, max);
@@ -1507,4 +1526,37 @@ impl App {
     //     // Return a valid variant for testing, e.g. Precedes
     //     Some(RelationKind::Precedes)
     // }
+}
+
+/// Pipe text into the first available clipboard tool (Wayland, then X11)
+fn copy_to_clipboard(text: &str) -> Result<(), String> {
+    use std::io::Write;
+    use std::process::{Command, Stdio};
+
+    let mut candidates: Vec<(&str, &[&str])> = Vec::new();
+    if std::env::var_os("WAYLAND_DISPLAY").is_some() {
+        candidates.push(("wl-copy", &[]));
+    }
+    if std::env::var_os("DISPLAY").is_some() {
+        candidates.push(("xclip", &["-selection", "clipboard"]));
+        candidates.push(("xsel", &["--clipboard", "--input"]));
+    }
+    for (cmd, args) in candidates {
+        let Ok(mut child) = Command::new(cmd)
+            .args(args)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+        else {
+            continue;
+        };
+        if let Some(mut stdin) = child.stdin.take() {
+            let _ = stdin.write_all(text.as_bytes());
+        }
+        if child.wait().map(|s| s.success()).unwrap_or(false) {
+            return Ok(());
+        }
+    }
+    Err("no clipboard tool (wl-copy, xclip, xsel) worked".to_string())
 }

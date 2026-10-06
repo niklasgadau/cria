@@ -512,6 +512,7 @@ pub async fn run_ui(
                             KeyCode::Char('g') => { app_guard.details_scroll.set(0); true }
                             KeyCode::Char('G') => { app_guard.scroll_details(i32::from(u16::MAX)); true }
                             KeyCode::Char('v') | KeyCode::Char('q') | KeyCode::Esc => { app_guard.details_fullscreen = false; true }
+                            KeyCode::Char('y') => { app_guard.copy_selected_task_url(); true }
                             _ => false,
                         };
                         if handled {
@@ -522,6 +523,7 @@ pub async fn run_ui(
                             KeyCode::Char('v') => { app_guard.details_fullscreen = true; true }
                             KeyCode::Char('J') => { app_guard.scroll_details(1); true }
                             KeyCode::Char('K') => { app_guard.scroll_details(-1); true }
+                            KeyCode::Char('y') => { app_guard.copy_selected_task_url(); true }
                             _ => false,
                         };
                         if handled {
