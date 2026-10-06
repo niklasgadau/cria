@@ -96,6 +96,7 @@ impl App {
                 crate::tui::app::task_filter::TaskFilter::All => true,
                 crate::tui::app::task_filter::TaskFilter::CompletedOnly => task.done,
             }).collect();
+            self.apply_hierarchical_sort();
             
             // Apply layout-specific sort if no manual sort is active
             if self.current_sort.is_none() {

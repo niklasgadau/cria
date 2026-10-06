@@ -1393,6 +1393,14 @@ impl App {
 
     /// Apply hierarchical sorting to maintain parent-child relationships
     pub fn apply_hierarchical_sort(&mut self) {
+        // Base order: project name, then project-local index (lowest first)
+        let project_map = &self.project_map;
+        self.tasks.sort_by_cached_key(|t| {
+            let project = project_map.get(&t.project_id).map(|p| normalize_string(p)).unwrap_or_default();
+            (project, t.index.unwrap_or(i64::MAX), t.id)
+        });
+        let position: HashMap<i64, usize> = self.tasks.iter().enumerate().map(|(i, t)| (t.id, i)).collect();
+
         // First, identify all parent-child relationships
         let mut parent_child_map: HashMap<i64, Vec<i64>> = HashMap::new();
         let mut child_parent_map: HashMap<i64, i64> = HashMap::new();
@@ -1402,7 +1410,9 @@ impl App {
             if let Some(ref related_tasks) = task.related_tasks {
                 // If this task has subtasks (is a parent)
                 if let Some(subtasks) = related_tasks.get("subtask") {
-                    let subtask_ids: Vec<i64> = subtasks.iter().map(|t| t.id).collect();
+                    let mut subtask_ids: Vec<i64> = subtasks.iter().map(|t| t.id).collect();
+                    // Children follow the base order too (missing ones last)
+                    subtask_ids.sort_by_key(|id| position.get(id).copied().unwrap_or(usize::MAX));
                     parent_child_map.insert(task.id, subtask_ids.clone());
                     
                     // Also populate the reverse mapping

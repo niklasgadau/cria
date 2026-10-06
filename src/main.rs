@@ -274,9 +274,10 @@ async fn tokio_main(api_url: String, api_key: String, default_project: String, c
     debug_log(&format!("Fetched {} saved filters from backend", filters.len()));
     {
         let mut app_guard = app.lock().await;
-        app_guard.update_all_tasks(tasks);
+        // Projects first: update_all_tasks sorts by project name
         app_guard.project_map = project_map;
         app_guard.project_colors = project_colors;
+        app_guard.update_all_tasks(tasks);
         app_guard.set_filters(filters);
         // Merge all_labels into label_map and label_colors
         for label in all_labels {
