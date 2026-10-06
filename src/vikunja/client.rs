@@ -19,7 +19,7 @@ impl VikunjaClient {
 
     #[allow(dead_code)] // Alternative client methods
     pub async fn get_tasks(&self) -> Result<Vec<Task>, reqwest::Error> {
-        let url = format!("{}/tasks/all", self.api_url);
+        let url = format!("{}/tasks", self.api_url);
         let tasks = self.client.get(&url).send().await?.json::<Vec<Task>>().await?;
         Ok(tasks)
     }
@@ -27,7 +27,7 @@ impl VikunjaClient {
     #[allow(dead_code)] // Alternative client methods
     pub async fn get_tasks_filtered(&self, show_completed: bool) -> Result<Vec<Task>, reqwest::Error> {
         let filter_param = if show_completed { "true" } else { "false" };
-        let url = format!("{}/tasks/all?filter_done={}", self.api_url, filter_param);
+        let url = format!("{}/tasks?filter_done={}", self.api_url, filter_param);
         let tasks = self.client.get(&url).send().await?.json::<Vec<Task>>().await?;
         Ok(tasks)
     }

@@ -616,7 +616,7 @@ impl super::VikunjaClient {
     pub async fn get_all_tasks_comprehensive(&self) -> Result<Vec<crate::vikunja::models::Task>, reqwest::Error> {
         debug_log("Starting comprehensive task fetch...");
         
-        // Method 1: Try paginated /api/v1/tasks/all
+        // Method 1: Try paginated /api/v1/tasks
         match self.get_tasks_paginated().await {
             Ok(tasks) => {
                 debug_log(&format!("Method 1 (paginated): Success, got {} tasks", tasks.len()));
@@ -627,7 +627,7 @@ impl super::VikunjaClient {
             }
         }
         
-        // Method 2: Try simple /api/v1/tasks/all with high limit
+        // Method 2: Try simple /api/v1/tasks with high limit
         match self.get_tasks_simple_with_limit().await {
             Ok(tasks) => {
                 debug_log(&format!("Method 2 (simple with limit): Success, got {} tasks", tasks.len()));
@@ -660,7 +660,7 @@ impl super::VikunjaClient {
         
         loop {
             // Use comprehensive parameters to get all tasks (done and not done)
-            let url = format!("{}/api/v1/tasks/all?page={}&per_page={}&sort_by=id&order_by=desc&filter_include_nulls=true", 
+            let url = format!("{}/api/v1/tasks?page={}&per_page={}&sort_by=id&order_by=desc&filter_include_nulls=true", 
                              self.base_url, page, per_page);
             
             debug_log(&format!("Fetching page {} with URL: {}", page, url));
@@ -693,7 +693,7 @@ impl super::VikunjaClient {
             all_tasks.extend(page_tasks);
             
             // If we got fewer tasks than requested, we've reached the end
-            if page_count < per_page {
+            if page_count == 0 {
                 debug_log(&format!("Reached end of pagination on page {} (got {} < {})", page, page_count, per_page));
                 break;
             }
@@ -711,7 +711,7 @@ impl super::VikunjaClient {
     
     async fn get_tasks_simple_with_limit(&self) -> Result<Vec<crate::vikunja::models::Task>, reqwest::Error> {
         // Try with a very high limit and include nulls to get everything
-        let url = format!("{}/api/v1/tasks/all?per_page=10000&filter_include_nulls=true&sort_by=id&order_by=desc", self.base_url);
+        let url = format!("{}/api/v1/tasks?per_page=10000&filter_include_nulls=true&sort_by=id&order_by=desc", self.base_url);
         
         debug_log(&format!("Trying simple fetch with high limit: {}", url));
         
