@@ -9,16 +9,7 @@ use chrono::{Datelike, Local};
 use super::hex_to_color;
 
 
-/// Vikunja stores descriptions and comments as HTML; render them as plain text.
-fn html_to_lines(html: &str, width: usize) -> Vec<String> {
-    if !html.contains('<') {
-        return html.lines().map(String::from).collect();
-    }
-    match html2text::from_read(html.as_bytes(), width.max(20)) {
-        Ok(text) => text.lines().map(String::from).collect(),
-        Err(_) => vec![html.to_string()],
-    }
-}
+use super::html_render::html_to_styled_lines;
 
 pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
     let text_width = area.width.saturating_sub(2) as usize;
@@ -46,9 +37,7 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
                 details_lines.push(Line::from(vec![
                     Span::styled("Description:", Style::default().add_modifier(Modifier::BOLD)),
                 ]));
-                for line in html_to_lines(description, text_width) {
-                    details_lines.push(Line::from(line));
-                }
+                details_lines.extend(html_to_styled_lines(description, text_width));
                 details_lines.push(Line::from(""));
             }
         }
@@ -491,11 +480,10 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
                         Span::raw("  "),
                         Span::styled(date_str.clone(), Style::default().fg(Color::DarkGray)),
                     ]));
-                    for line in html_to_lines(text, text_width.saturating_sub(5)) {
-                        details_lines.push(Line::from(vec![
-                            Span::raw("     "),
-                            Span::raw(line),
-                        ]));
+                    for line in html_to_styled_lines(text, text_width.saturating_sub(5)) {
+                        let mut spans = vec![Span::raw("     ")];
+                        spans.extend(line.spans);
+                        details_lines.push(Line::from(spans));
                     }
                     details_lines.push(Line::from(""));
                 }
@@ -749,7 +737,7 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
     };
     let paragraph = Paragraph::new(details)
         .block(Block::default().borders(Borders::ALL).title(title))
-        .wrap(Wrap { trim: true })
+        .wrap(Wrap { trim: false }) // keep list/code indentation
         .scroll((scroll, 0));
     f.render_widget(paragraph, area);
 }
