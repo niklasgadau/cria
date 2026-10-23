@@ -142,6 +142,7 @@ mod tests {
             repeat_after: None,
             repeat_mode: None,
             subscription: None,
+            comment_count: None,
         }
     }
 

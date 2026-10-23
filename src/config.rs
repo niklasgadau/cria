@@ -285,6 +285,7 @@ pub enum TaskColumn {
     Priority,
     Status,
     Assignees,
+    Comments,
     Created,
     Updated,
 }
@@ -356,6 +357,7 @@ impl TaskColumn {
             TaskColumn::Priority => "Priority",
             TaskColumn::Status => "Status",
             TaskColumn::Assignees => "Assignees",
+            TaskColumn::Comments => "Comments",
             TaskColumn::Created => "Created",
             TaskColumn::Updated => "Updated",
         }

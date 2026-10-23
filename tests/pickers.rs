@@ -134,6 +134,7 @@ fn test_project_picker_preserves_task_filter() {
             repeat_after: None,
             repeat_mode: Some(0),
             subscription: None,
+            comment_count: None,
         },
         cria::vikunja::models::Task {
             id: 2,
@@ -168,6 +169,7 @@ fn test_project_picker_preserves_task_filter() {
             repeat_after: None,
             repeat_mode: Some(0),
             subscription: None,
+            comment_count: None,
         },
         cria::vikunja::models::Task {
             id: 3,
@@ -202,6 +204,7 @@ fn test_project_picker_preserves_task_filter() {
             repeat_after: None,
             repeat_mode: Some(0),
             subscription: None,
+            comment_count: None,
         },
     ];
     

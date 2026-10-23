@@ -397,5 +397,6 @@ fn create_test_task() -> Task {
         repeat_after: None,
         repeat_mode: None,
         subscription: None,
+        comment_count: None,
     }
 }

@@ -244,6 +244,7 @@ pub async fn run_ui(
                                                         if let Some(ref mut modal) = app_guard.comments_modal {
                                                             modal.comments = comments_list.clone();
                                                         }
+                                                        app_guard.set_task_comments(task_id as i64, comments_list);
                                                         app_guard.add_debug_message("Comments refreshed in modal".to_string());
                                                     }
                                                     Err(e) => {

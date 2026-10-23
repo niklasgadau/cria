@@ -268,5 +268,6 @@ fn create_test_task_with_id(id: i64) -> Task {
         repeat_after: None,
         repeat_mode: None,
         subscription: None,
+        comment_count: None,
     }
 }

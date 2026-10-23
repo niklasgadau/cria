@@ -93,6 +93,7 @@ pub struct Task {
     pub repeat_after: Option<i64>,
     pub repeat_mode: Option<i64>,
     pub subscription: Option<Subscription>,
+    pub comment_count: Option<i64>, // only set when fetched with expand=comment_count
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -193,6 +194,7 @@ impl Default for Task {
             repeat_after: None,
             repeat_mode: None,
             subscription: None,
+            comment_count: None,
         }
     }
 }
@@ -272,6 +274,7 @@ impl Task {
             repeat_after: None,
             repeat_mode: None,
             subscription: None,
+            comment_count: None,
         }
     }
 }

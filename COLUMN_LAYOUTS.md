@@ -25,6 +25,7 @@ CRIA features a flexible column system that allows you to customize how task inf
 | `Priority` | Task priority level | "P1", "P3", "P5" | ❌ No |
 | `Status` | Task completion status | "Open", "Done" | ❌ No |
 | `Assignees` | Assigned team members | "alice, bob, charlie" | ✅ Yes |
+| `Comments` | Number of comments (empty when none) | "3" | ❌ No |
 | `Created` | Task creation date | "12/15/24" | ❌ No |
 | `Updated` | Last modified date | "12/22/24" | ❌ No |
 

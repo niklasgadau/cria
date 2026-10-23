@@ -50,6 +50,7 @@ fn sample_task_with_details(id: i64, title: &str, priority: Option<i32>, project
         repeat_after: None,
         repeat_mode: None,
         subscription: None,
+        comment_count: None,
     }
 }
 

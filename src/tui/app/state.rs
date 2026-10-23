@@ -359,6 +359,16 @@ impl App {
     pub fn cache_detailed_task(&mut self, task: Task) {
         self.detailed_task_cache.insert(task.id, task);
     }
+    /// Store freshly loaded comments: details view and comment count in the task list.
+    pub fn set_task_comments(&mut self, task_id: i64, comments: Vec<crate::vikunja::models::Comment>) {
+        let count = Some(comments.len() as i64);
+        for task in self.tasks.iter_mut().chain(self.all_tasks.iter_mut()).filter(|t| t.id == task_id) {
+            task.comment_count = count;
+        }
+        if let Some(task) = self.detailed_task_cache.get_mut(&task_id) {
+            task.comments = Some(comments);
+        }
+    }
     /// Web UI URL of a task, derived from the configured API URL
     pub fn task_web_url(&self, task_id: i64) -> String {
         let base = self.config.api_url.trim_end_matches('/').trim_end_matches("/api/v1");
@@ -997,6 +1007,13 @@ impl App {
                                 std::cmp::Ordering::Less => std::cmp::Ordering::Less,       // Keep None last
                                 std::cmp::Ordering::Equal => std::cmp::Ordering::Equal,
                             },
+                        }
+                    }
+                    TaskColumn::Comments => {
+                        let cmp = a.comment_count.unwrap_or(0).cmp(&b.comment_count.unwrap_or(0));
+                        match sort_config.direction {
+                            SortDirection::Asc => cmp,
+                            SortDirection::Desc => cmp.reverse(),
                         }
                     }
                     TaskColumn::Status => {

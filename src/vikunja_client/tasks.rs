@@ -660,7 +660,7 @@ impl super::VikunjaClient {
         
         loop {
             // Use comprehensive parameters to get all tasks (done and not done)
-            let url = format!("{}/api/v1/tasks?page={}&per_page={}&sort_by=id&order_by=desc&filter_include_nulls=true", 
+            let url = format!("{}/api/v1/tasks?page={}&per_page={}&sort_by=id&order_by=desc&filter_include_nulls=true&expand=comment_count", 
                              self.base_url, page, per_page);
             
             debug_log(&format!("Fetching page {} with URL: {}", page, url));
@@ -711,7 +711,7 @@ impl super::VikunjaClient {
     
     async fn get_tasks_simple_with_limit(&self) -> Result<Vec<crate::vikunja::models::Task>, reqwest::Error> {
         // Try with a very high limit and include nulls to get everything
-        let url = format!("{}/api/v1/tasks?per_page=10000&filter_include_nulls=true&sort_by=id&order_by=desc", self.base_url);
+        let url = format!("{}/api/v1/tasks?per_page=10000&filter_include_nulls=true&expand=comment_count&sort_by=id&order_by=desc", self.base_url);
         
         debug_log(&format!("Trying simple fetch with high limit: {}", url));
         
@@ -762,7 +762,7 @@ impl super::VikunjaClient {
         
         // Get tasks from each project with comprehensive parameters
         for project in projects {
-            let tasks_url = format!("{}/api/v1/projects/{}/tasks?per_page=10000&filter_include_nulls=true&sort_by=id&order_by=desc", 
+            let tasks_url = format!("{}/api/v1/projects/{}/tasks?per_page=10000&filter_include_nulls=true&expand=comment_count&sort_by=id&order_by=desc", 
                                    self.base_url, project.id);
             debug_log(&format!("Fetching tasks from project {} ({}): {}", project.id, project.title, tasks_url));
             

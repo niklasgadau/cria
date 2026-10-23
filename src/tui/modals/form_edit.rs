@@ -281,7 +281,10 @@ async fn save_form_task(
                 let (mut tasks, project_map, project_colors) = client_clone.lock().await.get_tasks_with_projects().await.unwrap_or_default();
                 for t in &mut tasks {
                     if t.id == task.id {
+                        // The single-task response has no comment_count, keep the one from the list
+                        let comment_count = t.comment_count;
                         *t = task.clone();
+                        t.comment_count = comment_count;
                         break;
                     }
                 }

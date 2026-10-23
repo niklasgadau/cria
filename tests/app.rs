@@ -43,6 +43,7 @@ fn sample_task(id: i64, done: bool) -> Task {
         repeat_after: None,
         repeat_mode: None,
         subscription: None,
+        comment_count: None,
     }
 }
 

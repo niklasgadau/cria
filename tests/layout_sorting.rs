@@ -406,6 +406,7 @@ fn test_apply_layout_sort_integration() {
             repeat_after: None,
             repeat_mode: None,
             subscription: None,
+            comment_count: None,
         },
         Task {
             id: 2,
@@ -440,6 +441,7 @@ fn test_apply_layout_sort_integration() {
             repeat_after: None,
             repeat_mode: None,
             subscription: None,
+            comment_count: None,
         },
         Task {
             id: 3,
@@ -474,6 +476,7 @@ fn test_apply_layout_sort_integration() {
             repeat_after: None,
             repeat_mode: None,
             subscription: None,
+            comment_count: None,
         },
     ];
     

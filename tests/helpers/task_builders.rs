@@ -49,6 +49,7 @@ impl TaskBuilder {
                 repeat_after: Some(0),
                 repeat_mode: Some(0),
                 subscription: None,
+                comment_count: None,
             },
             comment_id_counter: 1,
         }

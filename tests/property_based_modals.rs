@@ -103,6 +103,7 @@ proptest! {
             repeat_after: None,
             repeat_mode: None,
             subscription: None,
+            comment_count: None,
         };
         app.tasks.push(task);
         
@@ -214,6 +215,7 @@ proptest! {
             repeat_after: None,
             repeat_mode: None,
             subscription: None,
+            comment_count: None,
         };
         app.tasks.push(task);
         

@@ -306,6 +306,10 @@ fn create_wrapped_cell_for_column<'a>(
                 Cell::from(truncated)
             }
         }
+        TaskColumn::Comments => match task.comment_count {
+            Some(n) if n > 0 => Cell::from(n.to_string()).style(Style::default().fg(Color::Green)),
+            _ => Cell::from(""),
+        },
         TaskColumn::Created => {
             // Note: created is a string in the model, would need similar parsing
             Cell::from(task.created.as_ref().map(|_| "N/A").unwrap_or("-"))
