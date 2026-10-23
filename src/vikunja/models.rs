@@ -153,7 +153,7 @@ pub struct Reminder {
 #[allow(dead_code)] // API response fields may not all be used
 pub struct Subscription {
     pub id: i64,
-    pub entity: Option<i64>,
+    pub entity: Option<String>,
     pub entity_id: Option<i64>,
     pub created: Option<String>,
 }
