@@ -42,6 +42,11 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
             }
         }
 
+        // Comments, directly below the description
+        if let Some(comments) = task.comments.as_deref().filter(|c| !c.is_empty()) {
+            details_lines.extend(comment_lines(comments, text_width));
+        }
+
                 // Project
         if task.project_id > 0 {
             if let Some(project_name) = app.project_map.get(&task.project_id) {
@@ -428,68 +433,6 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
             }
         }
 
-        // Comments
-        if let Some(comments) = &task.comments {
-            if !comments.is_empty() {
-                details_lines.push(Line::from(vec![
-                    Span::styled("Comments: ", Style::default().add_modifier(Modifier::BOLD)),
-                    Span::styled("💬", Style::default().fg(Color::Green)),
-                    Span::raw(format!(" {} comment(s)", comments.len()))
-                ]));
-                details_lines.push(Line::from(""));
-
-                for (_i, comment) in comments.iter().enumerate() {
-                    // Author
-                    let author = if let Some(user) = &comment.author {
-                        if !user.username.is_empty() {
-                            if let Some(name) = &user.name {
-                                if !name.is_empty() {
-                                    format!("{} (@{})", name, user.username)
-                                } else {
-                                    format!("@{}", user.username)
-                                }
-                            } else {
-                                format!("@{}", user.username)
-                            }
-                        } else {
-                            "Unknown user".to_string()
-                        }
-                    } else {
-                        "Unknown user".to_string()
-                    };
-                    // Date
-                    let date_str = if let Some(created) = &comment.created {
-                        if !created.is_empty() {
-                            if let Ok(parsed_date) = chrono::DateTime::parse_from_rfc3339(created) {
-                                parsed_date.format("%Y-%m-%d %H:%M").to_string()
-                            } else {
-                                created.clone()
-                            }
-                        } else {
-                            "".to_string()
-                        }
-                    } else {
-                        "".to_string()
-                    };
-                    // Text
-                    let text = comment.comment.as_deref().unwrap_or("");
-
-                    details_lines.push(Line::from(vec![
-                        Span::raw("  ─ "),
-                        Span::styled(author.clone(), Style::default().fg(Color::Cyan)),
-                        Span::raw("  "),
-                        Span::styled(date_str.clone(), Style::default().fg(Color::DarkGray)),
-                    ]));
-                    for line in html_to_styled_lines(text, text_width.saturating_sub(5)) {
-                        let mut spans = vec![Span::raw("     ")];
-                        spans.extend(line.spans);
-                        details_lines.push(Line::from(spans));
-                    }
-                    details_lines.push(Line::from(""));
-                }
-            }
-        }
-
         // Reminders
         if let Some(reminders) = &task.reminders {
             if !reminders.is_empty() {
@@ -731,7 +674,7 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
     let title = if app.details_fullscreen {
         format!("Task Details [{}/{}]  j/k scroll · PgUp/PgDn · g/G · v/Esc close", scroll, max_scroll)
     } else if max_scroll > 0 {
-        format!("Task Details [{}/{}]  J/K scroll · v fullscreen", scroll, max_scroll)
+        format!("Task Details [{}/{}]  J/K · PgUp/PgDn scroll · v fullscreen", scroll, max_scroll)
     } else {
         "Task Details".to_string()
     };
@@ -742,3 +685,49 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
     f.render_widget(paragraph, area);
 }
 
+
+fn separator(width: usize, style: Style) -> Line<'static> {
+    Line::from(Span::styled("─".repeat(width), style))
+}
+
+fn comment_author(comment: &crate::vikunja::models::Comment) -> String {
+    match &comment.author {
+        Some(user) if !user.username.is_empty() => match user.name.as_deref() {
+            Some(name) if !name.is_empty() => format!("{} (@{})", name, user.username),
+            _ => format!("@{}", user.username),
+        },
+        _ => "Unknown user".to_string(),
+    }
+}
+
+fn comment_date(comment: &crate::vikunja::models::Comment) -> String {
+    let created = comment.created.as_deref().unwrap_or("");
+    chrono::DateTime::parse_from_rfc3339(created)
+        .map(|d| d.with_timezone(&Local).format("%Y-%m-%d %H:%M").to_string())
+        .unwrap_or_else(|_| created.to_string())
+}
+
+/// Comment section: a separator above, between and below the comments.
+fn comment_lines(comments: &[crate::vikunja::models::Comment], width: usize) -> Vec<Line<'static>> {
+    let strong = Style::default().fg(Color::Gray);
+    let faint = Style::default().fg(Color::DarkGray);
+    let mut lines = vec![
+        separator(width, strong),
+        Line::from(vec![
+            Span::styled("Comments ", Style::default().add_modifier(Modifier::BOLD)),
+            Span::styled(format!("💬 {}", comments.len()), Style::default().fg(Color::Green)),
+        ]),
+    ];
+    for (i, comment) in comments.iter().enumerate() {
+        lines.push(if i == 0 { Line::from("") } else { separator(width, faint) });
+        lines.push(Line::from(vec![
+            Span::styled(comment_author(comment), Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
+            Span::raw("  "),
+            Span::styled(comment_date(comment), faint),
+        ]));
+        lines.extend(html_to_styled_lines(comment.comment.as_deref().unwrap_or(""), width));
+    }
+    lines.push(separator(width, strong));
+    lines.push(Line::from(""));
+    lines
+}

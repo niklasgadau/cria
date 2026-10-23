@@ -520,9 +520,15 @@ pub async fn run_ui(
                         }
                     } else if !ctrl {
                         let handled = match key.code {
-                            KeyCode::Char('v') => { app_guard.details_fullscreen = true; true }
+                            KeyCode::Char('v') => {
+                                app_guard.details_fullscreen = true;
+                                fetch_selected_task_details(&app_guard, &app, &client_clone);
+                                true
+                            }
                             KeyCode::Char('J') => { app_guard.scroll_details(1); true }
                             KeyCode::Char('K') => { app_guard.scroll_details(-1); true }
+                            KeyCode::PageDown => { app_guard.scroll_details(page); true }
+                            KeyCode::PageUp => { app_guard.scroll_details(-page); true }
                             KeyCode::Char('y') => { app_guard.copy_selected_task_url(); true }
                             _ => false,
                         };
@@ -783,24 +789,9 @@ pub async fn run_ui(
                 // handle dispatch_key and refresh
                 let key_handled = dispatch_key(&mut *app_guard, key, &terminal);
                 
-                // After any navigation key, check if we need to fetch detailed task data
-                if key_handled && (key.code == KeyCode::Up || key.code == KeyCode::Down || 
-                                  key.code == KeyCode::Char('j') || key.code == KeyCode::Char('k') ||
-                                  key.code == KeyCode::Char('g') || key.code == KeyCode::Char('G')) {
-                    if let Some(task) = app_guard.get_selected_task() {
-                        let task_id = task.id;
-                        if !app_guard.detailed_task_cache.contains_key(&task_id) {
-                            let client_clone = client_clone.clone();
-                            let app_clone = app.clone();
-                            tokio::spawn(async move {
-                                let client = client_clone.lock().await;
-                                if let Ok(detailed_task) = client.get_task_detailed(task_id as u64).await {
-                                    let mut app_guard = app_clone.lock().await;
-                                    app_guard.cache_detailed_task(detailed_task);
-                                }
-                            });
-                        }
-                    }
+                // The selection may have changed (navigation, filter, search): load its comments
+                if key_handled {
+                    fetch_selected_task_details(&app_guard, &app, &client_clone);
                 }
                 
                 if key_handled {
@@ -837,6 +828,25 @@ pub async fn run_ui(
 }
 
 /// Handle key events, return true if event was handled
+/// Loads the selected task with comments in the background, unless it is already cached.
+fn fetch_selected_task_details(app_guard: &App, app: &Arc<Mutex<App>>, client: &Arc<Mutex<VikunjaClient>>) {
+    let Some(task) = app_guard.get_selected_task() else { return };
+    let task_id = task.id;
+    if app_guard.detailed_task_cache.contains_key(&task_id) {
+        return;
+    }
+    let client = client.clone();
+    let app = app.clone();
+    tokio::spawn(async move {
+        let result = client.lock().await.get_task_detailed(task_id as u64).await;
+        let mut app_guard = app.lock().await;
+        match result {
+            Ok(detailed_task) => app_guard.cache_detailed_task(detailed_task),
+            Err(e) => app_guard.add_debug_message(format!("Failed to load details for task {}: {}", task_id, e)),
+        }
+    });
+}
+
 fn dispatch_key(app: &mut App, key: KeyEvent, terminal: &Terminal<CrosstermBackend<std::io::Stdout>>) -> bool {
     use crate::tui::modals::utils::try_show_modal;
     use KeyCode::*;
