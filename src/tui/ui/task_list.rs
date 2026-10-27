@@ -2,6 +2,7 @@
 
 use crate::tui::app::state::App;
 use crate::config::{TaskColumn, TableColumn};
+use crate::vikunja::models::TaskStage;
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style, Modifier};
 use ratatui::widgets::{Table, Row, Cell, Block, Borders};
@@ -310,6 +311,16 @@ fn create_wrapped_cell_for_column<'a>(
             Some(n) if n > 0 => Cell::from(n.to_string()).style(Style::default().fg(Color::Green)),
             _ => Cell::from(""),
         },
+        TaskColumn::Stage => {
+            let stage = task.stage();
+            let color = match stage {
+                TaskStage::Ready => Color::Reset,
+                TaskStage::Progress => Color::Yellow,
+                TaskStage::Review => Color::Magenta,
+                TaskStage::Done => Color::Green,
+            };
+            Cell::from(stage.as_str()).style(Style::default().fg(color))
+        }
         TaskColumn::Created => {
             // Note: created is a string in the model, would need similar parsing
             Cell::from(task.created.as_ref().map(|_| "N/A").unwrap_or("-"))

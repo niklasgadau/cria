@@ -199,7 +199,46 @@ impl Default for Task {
     }
 }
 
+/// Lifecycle stage of a task. Vikunja only knows open/done, the stages in between are labels.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum TaskStage {
+    Ready,
+    Progress,
+    Review,
+    Done,
+}
+
+impl TaskStage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TaskStage::Ready => "ready",
+            TaskStage::Progress => "progress",
+            TaskStage::Review => "review",
+            TaskStage::Done => "done",
+        }
+    }
+}
+
+/// Derive the stage from the done flag and the `in-review` / `in-progress` labels (review wins).
+pub fn stage_of(done: bool, labels: Option<&[Label]>) -> TaskStage {
+    if done {
+        return TaskStage::Done;
+    }
+    let has = |name: &str| labels.is_some_and(|ls| ls.iter().any(|l| l.title.eq_ignore_ascii_case(name)));
+    if has("in-review") {
+        TaskStage::Review
+    } else if has("in-progress") {
+        TaskStage::Progress
+    } else {
+        TaskStage::Ready
+    }
+}
+
 impl Task {
+    pub fn stage(&self) -> TaskStage {
+        stage_of(self.done, self.labels.as_deref())
+    }
+
     #[allow(dead_code)]
     pub fn to_vikunja_task(&self) -> crate::vikunja_client::tasks::VikunjaTask {
         crate::vikunja_client::tasks::VikunjaTask {
@@ -276,5 +315,40 @@ impl Task {
             subscription: None,
             comment_count: None,
         }
+    }
+}
+
+#[cfg(test)]
+mod stage_tests {
+    use super::*;
+
+    fn label(title: &str) -> Label {
+        Label { id: 1, title: title.to_string(), hex_color: None, description: None, created: None, updated: None, created_by: None }
+    }
+
+    #[test]
+    fn done_wins_over_labels() {
+        assert_eq!(stage_of(true, Some(&[label("in-review")])), TaskStage::Done);
+    }
+
+    #[test]
+    fn review_label() {
+        assert_eq!(stage_of(false, Some(&[label("in-review")])), TaskStage::Review);
+    }
+
+    #[test]
+    fn progress_label() {
+        assert_eq!(stage_of(false, Some(&[label("other"), label("In-Progress")])), TaskStage::Progress);
+    }
+
+    #[test]
+    fn ready_without_stage_labels() {
+        assert_eq!(stage_of(false, None), TaskStage::Ready);
+        assert_eq!(stage_of(false, Some(&[label("bug")])), TaskStage::Ready);
+    }
+
+    #[test]
+    fn both_labels_show_review() {
+        assert_eq!(stage_of(false, Some(&[label("in-progress"), label("in-review")])), TaskStage::Review);
     }
 }

@@ -1016,6 +1016,13 @@ impl App {
                             SortDirection::Desc => cmp.reverse(),
                         }
                     }
+                    TaskColumn::Stage => {
+                        let cmp = a.stage().cmp(&b.stage());
+                        match sort_config.direction {
+                            SortDirection::Asc => cmp,
+                            SortDirection::Desc => cmp.reverse(),
+                        }
+                    }
                     TaskColumn::Status => {
                         let cmp = a.done.cmp(&b.done);
                         match sort_config.direction {
