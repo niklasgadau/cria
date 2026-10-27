@@ -802,6 +802,10 @@ pub async fn run_ui(
                     drop(app_guard);
                     let mut app_guard = app.lock().await;
                     refresh_from_api(&mut *app_guard, &client_clone).await;
+                    // Comments may have changed too: drop cached details, reload the selected task
+                    let selected_id = app_guard.get_selected_task().map(|t| t.id);
+                    app_guard.detailed_task_cache.retain(|id, _| Some(*id) == selected_id);
+                    reload_selected_task_details(&app_guard, &app, &client_clone);
                     continue;
                 }
 
@@ -836,6 +840,13 @@ fn fetch_selected_task_details(app_guard: &App, app: &Arc<Mutex<App>>, client: &
     if app_guard.detailed_task_cache.contains_key(&task_id) {
         return;
     }
+    reload_selected_task_details(app_guard, app, client);
+}
+
+/// Loads the selected task with comments in the background, replacing any cached version.
+fn reload_selected_task_details(app_guard: &App, app: &Arc<Mutex<App>>, client: &Arc<Mutex<VikunjaClient>>) {
+    let Some(task) = app_guard.get_selected_task() else { return };
+    let task_id = task.id;
     let client = client.clone();
     let app = app.clone();
     tokio::spawn(async move {
