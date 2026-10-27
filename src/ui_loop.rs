@@ -508,8 +508,8 @@ pub async fn run_ui(
                             KeyCode::Char('k') | KeyCode::Up => { app_guard.scroll_details(-1); true }
                             KeyCode::Char('d') if ctrl => { app_guard.scroll_details(page / 2); true }
                             KeyCode::Char('u') if ctrl => { app_guard.scroll_details(-page / 2); true }
-                            KeyCode::PageDown => { app_guard.scroll_details(page); true }
-                            KeyCode::PageUp => { app_guard.scroll_details(-page); true }
+                            KeyCode::PageDown => { app_guard.scroll_details(1); true }
+                            KeyCode::PageUp => { app_guard.scroll_details(-1); true }
                             KeyCode::Char('g') => { app_guard.details_scroll.set(0); true }
                             KeyCode::Char('G') => { app_guard.scroll_details(i32::from(u16::MAX)); true }
                             KeyCode::Char('v') | KeyCode::Char('q') | KeyCode::Esc => { app_guard.details_fullscreen = false; true }
@@ -528,8 +528,8 @@ pub async fn run_ui(
                             }
                             KeyCode::Char('J') => { app_guard.scroll_details(1); true }
                             KeyCode::Char('K') => { app_guard.scroll_details(-1); true }
-                            KeyCode::PageDown => { app_guard.scroll_details(page); true }
-                            KeyCode::PageUp => { app_guard.scroll_details(-page); true }
+                            KeyCode::PageDown => { app_guard.scroll_details(1); true }
+                            KeyCode::PageUp => { app_guard.scroll_details(-1); true }
                             KeyCode::Char('y') => { app_guard.copy_selected_task_url(); true }
                             _ => false,
                         };

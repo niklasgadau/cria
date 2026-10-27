@@ -672,7 +672,7 @@ pub fn draw_task_details(f: &mut Frame, app: &App, area: Rect) {
     }
     let scroll = app.details_scroll.get();
     let title = if app.details_fullscreen {
-        format!("Task Details [{}/{}]  j/k scroll · PgUp/PgDn · g/G · v/Esc close", scroll, max_scroll)
+        format!("Task Details [{}/{}]  j/k · PgUp/PgDn scroll · ^d/^u · g/G · v/Esc close", scroll, max_scroll)
     } else if max_scroll > 0 {
         format!("Task Details [{}/{}]  J/K · PgUp/PgDn scroll · v fullscreen", scroll, max_scroll)
     } else {
