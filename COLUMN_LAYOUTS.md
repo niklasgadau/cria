@@ -26,6 +26,7 @@ CRIA features a flexible column system that allows you to customize how task inf
 | `Status` | Task completion status | "Open", "Done" | ❌ No |
 | `Assignees` | Assigned team members | "alice, bob, charlie" | ✅ Yes |
 | `Comments` | Number of comments (empty when none) | "3" | ❌ No |
+| `Stage` | Lifecycle stage derived from labels: `done`, `review` (label `in-review`), `progress` (label `in-progress`), else `ready` | "progress" | ❌ No |
 | `Created` | Task creation date | "12/15/24" | ❌ No |
 | `Updated` | Last modified date | "12/22/24" | ❌ No |
 

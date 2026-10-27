@@ -53,7 +53,7 @@ quick_actions:
     target: "Today"
 
 # Customize table columns display
-# Available columns: Title, Project, Labels, DueDate, StartDate, Priority, Status, Assignees, Comments, Created, Updated
+# Available columns: Title, Project, Labels, DueDate, StartDate, Priority, Status, Assignees, Comments, Stage, Created, Updated
 
 # Option 1: Simple column configuration (legacy format, still supported)
 # table_columns:
